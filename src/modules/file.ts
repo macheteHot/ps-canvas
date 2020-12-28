@@ -8,15 +8,15 @@ export default class FiltUtil {
 
   convertFileToImg ():Promise<MyImage> {
     return new Promise((resolve) => {
-      const img = new MyImage()
       const reader = new FileReader()
+      const img = new Image()
       reader.readAsDataURL(this.file)
       reader.onloadend = ({ target }) => {
         img.src = target.result as string
-        img.fileName = this.file.name
       }
+
       img.onload = () => {
-        resolve(img)
+        resolve(new MyImage(this.file.name, img))
       }
     })
   }

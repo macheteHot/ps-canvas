@@ -1,9 +1,14 @@
 import PhotoShop from './modules'
 import Dom from './modules/dom'
-import './style/index.css'
-import './style/reset.css'
-const ps = new PhotoShop()
+import FiltUtil from './modules/file'
+import { Actions } from './modules/action'
 
+import './style/index.less'
+import './style/reset.css'
+import 'bootstrap/dist/css/bootstrap.min.css'
+
+const ps = new PhotoShop()
+const actions = new Actions(ps)
 declare class Gcss {
   constructor (options:unknown)
   start():void
@@ -11,11 +16,35 @@ declare class Gcss {
 
 const app = document.getElementById('app')
 Dom.mount(app)
+// 添加图片事件 start
+const inputFile = Dom.factory('input', '', { type: 'file', accept: 'image/*' })
+const addImg = Dom.factory('button', ['btn', 'btn-primary', 'btn-sm'], { type: 'button' })
+async function addLayer (event: Event) {
+  if ((event.target as HTMLInputElement).files && (event.target as HTMLInputElement).files.length) {
+    const fileUtil = new FiltUtil((event.target as HTMLInputElement).files[0])
+    const img = await fileUtil.convertFileToImg()
+    ps.addLayerImg(img)
+  }
+}
+inputFile.addEventListener('change', addLayer)
 
-const addImg = document.createElement('button')
+addImg.addEventListener('click', () => { inputFile.click() })
 addImg.textContent = 'add image'
 Dom.top.append(addImg)
+// 添加图片事件 end
 
+// 添加图层
+
+// 添加指针移动工具 start
+const moveIcon = Dom.factoryIcon('iconzhizhen', 'bg-gradient-primary')
+moveIcon.addEventListener('click', actions.move.bind(actions))
+Dom.leftBox.append(moveIcon)
+// 添加指针移动工具 end
+
+// 添加缩放工具 start
+const scaleIcon = Dom.factoryIcon('iconsuofang', 'bg-gradient-primary')
+scaleIcon.addEventListener('click', actions.scale.bind(actions))
+Dom.leftBox.append(scaleIcon)
 new Gcss({
   colors    : { },
   unit      : 'px',

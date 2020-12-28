@@ -37,6 +37,19 @@ module.exports = {
           'postcss-loader',
         ],
       },
+      {
+        test : /\.less$/,
+        use  : [
+          'style-loader',
+          {
+            loader  : 'css-loader',
+            options : {
+              importLoaders: 1,
+            },
+          },
+          'less-loader',
+        ],
+      },
     ],
   },
   plugins: [
