@@ -6,6 +6,7 @@ import { Actions } from './modules/action'
 import './style/index.less'
 import './style/reset.css'
 import 'bootstrap/dist/css/bootstrap.min.css'
+import { ActionTypes } from './Interface'
 
 const ps = new PhotoShop()
 const actions = new Actions(ps)
@@ -27,24 +28,26 @@ async function addLayer (event: Event) {
   }
 }
 inputFile.addEventListener('change', addLayer)
-
 addImg.addEventListener('click', () => { inputFile.click() })
 addImg.textContent = 'add image'
 Dom.top.append(addImg)
 // 添加图片事件 end
 
-// 添加图层
-
 // 添加指针移动工具 start
 const moveIcon = Dom.factoryIcon('iconzhizhen', 'bg-gradient-primary')
-moveIcon.addEventListener('click', actions.move.bind(actions))
+moveIcon.addEventListener('click', () => { actions.setType(ActionTypes.move) })
 Dom.leftBox.append(moveIcon)
 // 添加指针移动工具 end
 
 // 添加缩放工具 start
 const scaleIcon = Dom.factoryIcon('iconsuofang', 'bg-gradient-primary')
-scaleIcon.addEventListener('click', actions.scale.bind(actions))
+scaleIcon.addEventListener('click', actions.scale)
 Dom.leftBox.append(scaleIcon)
+
+// start action
+
+actions.start()
+
 new Gcss({
   colors    : { },
   unit      : 'px',
